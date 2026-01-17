@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -7,28 +8,33 @@ from openai import OpenAI
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Your profile - customize this
-MY_PROFILE = """
-Name: [Your Name]
-Background: Software Engineer with experience in Python, backend development, and AI/ML
-Skills: Python, Flask, FastAPI, React, PostgreSQL, MongoDB, AWS, Docker, Machine Learning, LLMs
-Experience: 3+ years building web applications and AI-powered tools
-Looking for: Software engineering roles, backend roles, AI/ML engineering roles
-"""
+PROMPT_PATH = os.path.join(os.path.dirname(__file__), 'prompt.txt')
+
+
+def load_prompt():
+    """Load custom prompt from file."""
+    if os.path.exists(PROMPT_PATH):
+        with open(PROMPT_PATH, 'r') as f:
+            return f.read()
+    return ""
+
+
+def save_prompt(text):
+    """Save custom prompt to file."""
+    with open(PROMPT_PATH, 'w') as f:
+        f.write(text)
 
 
 def generate_email(company_info: str, mode: str, job_description: str = None) -> dict:
     """Generate cold email using LLM."""
+    custom_prompt = load_prompt()
 
     if mode == "job_specific":
-        prompt = f"""You are helping write a cold outreach email for a specific job.
-
-MY PROFILE:
-{MY_PROFILE}
+        prompt = f"""{custom_prompt}
 
 COMPANY INFO:
 {company_info}
@@ -36,37 +42,30 @@ COMPANY INFO:
 JOB DESCRIPTION:
 {job_description}
 
-Write a cold email that:
-1. Is concise (under 150 words)
-2. Shows I've researched the company
-3. Connects my specific skills to the job requirements
-4. Has a clear call to action
-5. Sounds human, not templated
+Write a cold email for this specific job. Connect my skills to the job requirements.
 
 Return JSON:
 {{"subject": "email subject line", "body": "email body"}}
 
 Only return valid JSON."""
-    else:  # generic
-        prompt = f"""You are helping write a cold outreach email for a general inquiry.
-
-MY PROFILE:
-{MY_PROFILE}
+    else:
+        prompt = f"""{custom_prompt}
 
 COMPANY INFO:
 {company_info}
 
-Write a cold email that:
-1. Is concise (under 150 words)
-2. Shows genuine interest in the company
-3. Briefly highlights my relevant skills
-4. Asks about potential opportunities
-5. Sounds human, not templated
+Write a cold email asking about potential opportunities.
 
 Return JSON:
 {{"subject": "email subject line", "body": "email body"}}
 
 Only return valid JSON."""
+
+    print("\n" + "="*50)
+    print("FULL PROMPT SENT TO LLM:")
+    print("="*50)
+    print(prompt)
+    print("="*50 + "\n")
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -77,7 +76,6 @@ Only return valid JSON."""
     result = response.choices[0].message.content
 
     try:
-        import json
         if "```json" in result:
             result = result.split("```json")[1].split("```")[0]
         elif "```" in result:
@@ -87,13 +85,27 @@ Only return valid JSON."""
         return {"subject": "Error", "body": result}
 
 
+@app.route("/prompt", methods=["GET"])
+def get_prompt():
+    """Get current prompt."""
+    return jsonify({"prompt": load_prompt()})
+
+
+@app.route("/prompt", methods=["POST"])
+def update_prompt():
+    """Update prompt."""
+    data = request.json
+    save_prompt(data.get("prompt", ""))
+    return jsonify({"status": "ok"})
+
+
 @app.route("/generate", methods=["POST"])
 def generate():
     """Generate cold email endpoint."""
     data = request.json
 
     company_info = data.get("company_info", "")
-    mode = data.get("mode", "generic")  # "generic" or "job_specific"
+    mode = data.get("mode", "generic")
     job_description = data.get("job_description", "")
 
     if not company_info:

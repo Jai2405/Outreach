@@ -1,0 +1,33 @@
+{
+  "name": "Jai Vaderaa",
+  "education": {
+    "university": "University of Waterloo",
+    "major": "Mathematics"
+  },
+  "skills": ["Python", "GenAI", "FastAPI", "React", "PostgreSQL", "MongoDB", "AWS", "Docker", "ML", "LLMs"],
+  "experiences": [
+    {
+      "title": "AI Engineer",
+      "company": "swif AI",
+      "description": "Built AI agents for web crawling"
+    },
+    {
+      "title": "Systems Analyst",
+      "company": "Fairfax Financial Holdings",
+      "description": "Data engineering and ETL"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Cold Email Agent",
+      "description": "Agentically sends cold emails",
+      "tech": ["Python", "LLMs", "React"]
+    }
+  ],
+  "instructions": [
+    "Be concise (under 150 words)",
+    "Sound human, not templated",
+    "Show genuine interest in the company",
+    "Mention a specific thing about the company"
+  ]
+}
