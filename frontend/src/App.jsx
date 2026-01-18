@@ -89,7 +89,7 @@ function App() {
       {/* Header */}
       <header className="header">
         <h1>Outreach</h1>
-        <button className="settings-btn" onClick={() => setSidebarOpen(true)}>Settings</button>
+        <button className="settings-btn" onClick={() => setSidebarOpen(true)}>Prompt</button>
       </header>
 
       {/* Main Content */}
@@ -156,8 +156,13 @@ function App() {
           )}
 
           {loading && (
-            <div className="empty-state">
-              Generating...
+            <div className="loading-state">
+              Generating
+              <span className="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
             </div>
           )}
 
@@ -188,6 +193,15 @@ function App() {
                 </div>
                 <div className="result-content body">{result.body}</div>
               </div>
+
+              <a
+                className="open-email-btn"
+                href={`https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(result.subject)}&body=${encodeURIComponent(result.body)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open in Outlook
+              </a>
 
               <div className="refine-section">
                 <div className="field">

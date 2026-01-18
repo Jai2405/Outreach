@@ -33,19 +33,20 @@ body {
 }
 
 .settings-btn {
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid #111;
+  border-radius: 8px;
   cursor: pointer;
-  color: #666;
+  color: #111;
+  transition: all 0.15s ease;
 }
 
 .settings-btn:hover {
-  border-color: #111;
-  color: #111;
+  background: #111;
+  color: #fff;
 }
 
 /* Sidebar */
@@ -71,7 +72,7 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  width: 400px;
+  width: 520px;
   height: 100vh;
   background: #fff;
   border-left: 1px solid #e5e5e5;
@@ -116,14 +117,15 @@ body {
 
 .prompt-input {
   flex: 1;
-  margin: 20px;
-  padding: 16px;
+  margin: 24px;
+  padding: 20px;
   font-size: 14px;
-  font-family: 'SF Mono', Monaco, monospace;
+  font-family: inherit;
   border: 1px solid #ddd;
   border-radius: 8px;
   resize: none;
-  line-height: 1.6;
+  line-height: 1.7;
+  overflow-y: auto;
 }
 
 .prompt-input:focus {
@@ -132,23 +134,29 @@ body {
 }
 
 .save-btn {
-  margin: 0 20px 20px;
-  padding: 12px;
+  margin: 0 24px 24px;
+  padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  background: #111;
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #111;
+  border: 1px solid #111;
   border-radius: 8px;
   cursor: pointer;
+  transition: all 0.15s ease;
+  width: fit-content;
+  align-self: center;
 }
 
 .save-btn:hover:not(:disabled) {
-  background: #333;
+  background: #111;
+  color: #fff;
 }
 
 .save-btn:disabled {
-  background: #ccc;
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #999;
 }
 
 /* Main Content - Two Columns */
@@ -253,25 +261,29 @@ textarea::placeholder {
 
 /* Buttons */
 .generate-btn {
-  padding: 10px 24px;
+  padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  background: #111;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
+  background: #fff;
+  color: #111;
+  border: 1px solid #111;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
   margin-top: 8px;
   width: fit-content;
+  align-self: center;
 }
 
 .generate-btn:hover:not(:disabled) {
-  background: #333;
+  background: #111;
+  color: #fff;
 }
 
 .generate-btn:disabled {
-  background: #ccc;
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #999;
   cursor: not-allowed;
 }
 
@@ -281,6 +293,51 @@ textarea::placeholder {
   text-align: center;
   padding: 48px 24px;
   font-size: 14px;
+}
+
+/* Loading Animation */
+.loading-state {
+  color: #666;
+  text-align: center;
+  padding: 48px 24px;
+  font-size: 14px;
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.loading-dots span {
+  width: 4px;
+  height: 4px;
+  background: #666;
+  border-radius: 50%;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Results */
@@ -387,6 +444,28 @@ textarea::placeholder {
   border-color: #ccc;
   color: #999;
   cursor: not-allowed;
+}
+
+/* Open in Email */
+.open-email-btn {
+  display: block;
+  width: fit-content;
+  align-self: center;
+  text-align: center;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.open-email-btn:hover {
+  background: #106ebe;
 }
 
 /* Error */
