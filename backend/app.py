@@ -29,7 +29,7 @@ def save_prompt(text):
         f.write(text)
 
 
-def generate_email(company_info: str, mode: str, job_description: str = None) -> dict:
+def generate_email(company_info: str, mode: str, job_description: str = None, notes: str = None) -> dict:
     """Generate cold email using LLM."""
     custom_prompt = load_prompt()
 
@@ -43,7 +43,7 @@ JOB DESCRIPTION:
 {job_description}
 
 Write a cold email for this specific job. Connect my skills to the job requirements.
-
+{f"ADDITIONAL NOTES: {notes}" if notes else ""}
 Return JSON:
 {{"subject": "email subject line", "body": "email body"}}
 
@@ -55,7 +55,7 @@ COMPANY INFO:
 {company_info}
 
 Write a cold email asking about potential opportunities.
-
+{f"ADDITIONAL NOTES: {notes}" if notes else ""}
 Return JSON:
 {{"subject": "email subject line", "body": "email body"}}
 
@@ -107,6 +107,7 @@ def generate():
     company_info = data.get("company_info", "")
     mode = data.get("mode", "generic")
     job_description = data.get("job_description", "")
+    notes = data.get("notes", "")
 
     if not company_info:
         return jsonify({"error": "company_info is required"}), 400
@@ -114,7 +115,7 @@ def generate():
     if mode == "job_specific" and not job_description:
         return jsonify({"error": "job_description is required for job_specific mode"}), 400
 
-    result = generate_email(company_info, mode, job_description)
+    result = generate_email(company_info, mode, job_description, notes)
     return jsonify(result)
 
 

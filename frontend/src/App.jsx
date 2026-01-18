@@ -13,6 +13,7 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [prompt, setPrompt] = useState('')
   const [saving, setSaving] = useState(false)
+  const [notes, setNotes] = useState('')
 
   useEffect(() => {
     fetch(`${API_URL}/prompt`)
@@ -47,7 +48,8 @@ function App() {
         body: JSON.stringify({
           company_info: companyInfo,
           mode: mode,
-          job_description: jobDescription
+          job_description: jobDescription,
+          notes: notes
         })
       })
       const data = await res.json()
@@ -167,6 +169,25 @@ function App() {
                   </button>
                 </div>
                 <div className="result-content body">{result.body}</div>
+              </div>
+
+              <div className="refine-section">
+                <div className="field">
+                  <label>Refine</label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="'Make it shorter', 'Mention my ML experience', 'More casual tone'..."
+                    rows={2}
+                  />
+                </div>
+                <button
+                  className="regenerate-btn"
+                  onClick={generate}
+                  disabled={loading}
+                >
+                  {loading ? 'Regenerating...' : 'Regenerate'}
+                </button>
               </div>
             </div>
           )}

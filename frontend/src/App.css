@@ -311,3 +311,47 @@ textarea::placeholder {
   color: #c53030;
   font-size: 14px;
 }
+
+.refine-section {
+  margin-top: 8px;
+  padding: 16px;
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+}
+
+.refine-section .field {
+  margin-bottom: 12px;
+}
+
+.refine-section label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.regenerate-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #fff;
+  color: #111;
+  border: 1px solid #111;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.regenerate-btn:hover:not(:disabled) {
+  background: #111;
+  color: #fff;
+}
+
+.regenerate-btn:disabled {
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
