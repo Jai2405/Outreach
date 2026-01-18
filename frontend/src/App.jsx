@@ -67,7 +67,9 @@ function App() {
   }
 
   return (
-    <div className="layout">
+    <div className="app">
+      {/* Sidebar Overlay */}
+      <div className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)} />
       <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h2>System Prompt</h2>
@@ -77,74 +79,90 @@ function App() {
           className="prompt-input"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Enter your system prompt here... Include your background, skills, and email instructions."
+          placeholder="Enter your system prompt here..."
         />
         <button className="save-btn" onClick={savePrompt} disabled={saving}>
           {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
 
-      <div className="main">
-        <div className="container">
-          <header>
-            <div className="header-row">
-              <h1>Outreach</h1>
-              <button className="settings-btn" onClick={() => setSidebarOpen(true)}>
-                Settings
+      {/* Header */}
+      <header className="header">
+        <h1>Outreach</h1>
+        <button className="settings-btn" onClick={() => setSidebarOpen(true)}>Settings</button>
+      </header>
+
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Left Column - Input */}
+        <div className="column input-column">
+          <div className="column-header">
+            <h2>Input</h2>
+            <div className="toggle-wrapper">
+              <button
+                className={`toggle-btn ${mode === 'generic' ? 'active' : ''}`}
+                onClick={() => setMode('generic')}
+              >
+                Generic
+              </button>
+              <button
+                className={`toggle-btn ${mode === 'job_specific' ? 'active' : ''}`}
+                onClick={() => setMode('job_specific')}
+              >
+                Job Specific
               </button>
             </div>
-            <p className="subtitle">Cold emails that don't sound cold</p>
-          </header>
-
-          <div className="toggle-wrapper">
-            <button
-              className={`toggle-btn ${mode === 'generic' ? 'active' : ''}`}
-              onClick={() => setMode('generic')}
-            >
-              Generic
-            </button>
-            <button
-              className={`toggle-btn ${mode === 'job_specific' ? 'active' : ''}`}
-              onClick={() => setMode('job_specific')}
-            >
-              Job Specific
-            </button>
           </div>
 
-          <div className="form">
+          <div className="field">
+            <label>Company Info</label>
+            <textarea
+              value={companyInfo}
+              onChange={(e) => setCompanyInfo(e.target.value)}
+              placeholder="Paste company name, what they do, founder names, etc."
+            />
+          </div>
+
+          {mode === 'job_specific' && (
             <div className="field">
-              <label>Company Info</label>
+              <label>Job Description</label>
               <textarea
-                value={companyInfo}
-                onChange={(e) => setCompanyInfo(e.target.value)}
-                placeholder="Paste company name, what they do, founder names, etc."
-                rows={4}
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="Paste the job description, requirements, etc."
               />
             </div>
+          )}
 
-            {mode === 'job_specific' && (
-              <div className="field">
-                <label>Job Description</label>
-                <textarea
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="Paste the job description, requirements, etc."
-                  rows={6}
-                />
-              </div>
-            )}
+          <button
+            className="generate-btn"
+            onClick={generate}
+            disabled={loading || !companyInfo.trim() || (mode === 'job_specific' && !jobDescription.trim())}
+          >
+            {loading ? 'Generating...' : 'Generate'}
+          </button>
+        </div>
 
-            <button
-              className="generate-btn"
-              onClick={generate}
-              disabled={loading || !companyInfo.trim() || (mode === 'job_specific' && !jobDescription.trim())}
-            >
-              {loading ? 'Generating...' : 'Generate'}
-            </button>
+        {/* Right Column - Output */}
+        <div className="column output-column">
+          <div className="column-header">
+            <h2>Output</h2>
           </div>
 
+          {!result && !loading && (
+            <div className="empty-state">
+              Generated email will appear here
+            </div>
+          )}
+
+          {loading && (
+            <div className="empty-state">
+              Generating...
+            </div>
+          )}
+
           {result && !result.error && (
-            <div className="result">
+            <>
               <div className="result-section">
                 <div className="result-header">
                   <label>Subject</label>
@@ -177,7 +195,7 @@ function App() {
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="'Make it shorter', 'Mention my ML experience', 'More casual tone'..."
+                    placeholder="'Make it shorter', 'Mention my ML experience'..."
                     rows={2}
                   />
                 </div>
@@ -189,7 +207,7 @@ function App() {
                   {loading ? 'Regenerating...' : 'Regenerate'}
                 </button>
               </div>
-            </div>
+            </>
           )}
 
           {result?.error && (
